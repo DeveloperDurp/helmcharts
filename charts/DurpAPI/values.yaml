@@ -1,0 +1,35 @@
+deployment: 
+  image: registry.gitlab.com/developerdurp/durpapi
+  tag: ""
+  imagePullPolicy: Always
+  secretfile: durpapi-secret
+  hpa:
+    minReplicas: 3
+    maxReplicas: 10
+  probe:
+    readiness:  
+      httpGet:
+        path: /api/health/getHealth
+        port: 8080
+    liveness: 
+      httpGet:
+        path: /api/health/getHealth
+        port: 8080
+    startup: 
+      httpGet:
+        path: /api/health/getHealth
+        port: 8080
+
+ingress:
+  enabled: false
+  clusterissuer: letsencrypt-production
+  host: durpapi.durp.info
+  tls: durpapi-tls
+
+service:
+  type: ClusterIP
+  port: 80
+  targetport: 8080
+
+swagger:
+  host: api.durp.info/durpapi
